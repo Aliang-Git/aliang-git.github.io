@@ -142,11 +142,11 @@
     
     <category term="SpringBoot" scheme="https://blog.kakar.top/tags/SpringBoot/"/>
     
-    <category term="RabbitMQ" scheme="https://blog.kakar.top/tags/RabbitMQ/"/>
-    
     <category term="Redis" scheme="https://blog.kakar.top/tags/Redis/"/>
     
     <category term="Maven" scheme="https://blog.kakar.top/tags/Maven/"/>
+    
+    <category term="RabbitMQ" scheme="https://blog.kakar.top/tags/RabbitMQ/"/>
     
   </entry>
   
@@ -171,11 +171,7 @@
     
     <category term="SpringBoot" scheme="https://blog.kakar.top/tags/SpringBoot/"/>
     
-    <category term="Mybatis" scheme="https://blog.kakar.top/tags/Mybatis/"/>
-    
     <category term="TK-Mybatis" scheme="https://blog.kakar.top/tags/TK-Mybatis/"/>
-    
-    <category term="Mybatis-Plus" scheme="https://blog.kakar.top/tags/Mybatis-Plus/"/>
     
     <category term="H2" scheme="https://blog.kakar.top/tags/H2/"/>
     
@@ -184,6 +180,10 @@
     <category term="Thymeleaf" scheme="https://blog.kakar.top/tags/Thymeleaf/"/>
     
     <category term="SpringMVC" scheme="https://blog.kakar.top/tags/SpringMVC/"/>
+    
+    <category term="Mybatis" scheme="https://blog.kakar.top/tags/Mybatis/"/>
+    
+    <category term="Mybatis-Plus" scheme="https://blog.kakar.top/tags/Mybatis-Plus/"/>
     
   </entry>
   

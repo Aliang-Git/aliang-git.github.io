@@ -149,11 +149,11 @@
             
             <tag> SpringBoot </tag>
             
-            <tag> RabbitMQ </tag>
-            
             <tag> Redis </tag>
             
             <tag> Maven </tag>
+            
+            <tag> RabbitMQ </tag>
             
         </tags>
       
@@ -182,11 +182,7 @@
             
             <tag> SpringBoot </tag>
             
-            <tag> Mybatis </tag>
-            
             <tag> TK-Mybatis </tag>
-            
-            <tag> Mybatis-Plus </tag>
             
             <tag> H2 </tag>
             
@@ -195,6 +191,10 @@
             <tag> Thymeleaf </tag>
             
             <tag> SpringMVC </tag>
+            
+            <tag> Mybatis </tag>
+            
+            <tag> Mybatis-Plus </tag>
             
         </tags>
       
