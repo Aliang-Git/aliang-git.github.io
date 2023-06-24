@@ -4,23 +4,23 @@
   
     
     <entry>
-      <title>SpringCloud组件学习之config</title>
-      <link href="/posts/9f3469ff.html"/>
-      <url>/posts/9f3469ff.html</url>
+      <title>Nginx之二级域名反向代理</title>
+      <link href="/posts/7030efce.html"/>
+      <url>/posts/7030efce.html</url>
       
-        <content type="html"><![CDATA[<h1>5、SpringCloud Netflix Config的使用以及讲解</h1><h2 id="5-1、简介">5.1、简介</h2><p>在分布式系统中，由于服务数量非常多，配置文件分散在不同的微服务项目中，<strong>管理不方便</strong>。</p><p>Spring Cloud Config组件主要用于<strong>集中管理配置文件</strong>，它<strong>支持配置文件放在配置服务的本地，也支持放在Git仓库（Github、Gitee）</strong></p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122164102473.png" alt="image-20220122164102473"></p><p><strong>配置中心本质上也是一个微服务，同样需要注册到Eureka注册中心。</strong></p><h2 id="5-2、Git平台的选择">5.2、Git平台的选择</h2><blockquote><p>github访问太慢，本次学习使用码云（gitee）</p></blockquote><h2 id="5-3、创建远程仓库">5.3、创建远程仓库</h2><h4 id="5-3-1、新建仓库">5.3.1、新建仓库</h4><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122164913710.png" alt="image-20220122164913710"></p><h4 id="5-3-2、配置仓库信息">5.3.2、配置仓库信息</h4><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122165347412.png" alt="image-20220122165347412"></p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122165445539.png" alt="image-20220122165445539"></p><h4 id="5-3-3、创建配置文件">5.3.3、创建配置文件</h4><p>直接创建配置文件</p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122225549917.png" alt="image-20220122225549917"></p><p><strong>配置文件命名规则：</strong></p><p>配置文件的命名方式：<code>&#123;application&#125;-&#123;profifile&#125;.yml </code>或 <code>&#123;application&#125;-&#123;profifile&#125;.properties</code></p><p><code>application</code>为应用名称</p><p><code>profifile</code>用于区分开发环境（dev），测试环境（test）、生产环境（prod）等</p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122225758960.png" alt="image-20220122225758960"></p><h2 id="5-4、创建Config模块">5.4、创建Config模块</h2><h4 id="5-4-1、引入依赖">5.4.1、引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入Eureka客户端依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 引入Config服务类依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-config-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure><h4 id="5-4-2、配置文件">5.4.2、配置文件</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">12000</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">Config-Server</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">config:</span></span><br><span class="line">      <span class="attr">server:</span></span><br><span class="line">        <span class="attr">git:</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">https://gitee.com/superAliang/spring-cloud-config-demo.git</span> <span class="comment"># gitee上项目的地址，即远程库地址，公开的仓库不需要用户名和密码</span></span><br><span class="line">          <span class="comment"># username: 用户名</span></span><br><span class="line">          <span class="comment"># password: 密码</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span> <span class="comment"># 指定Eureka地址，用于将config这个服务注册到Eureka</span></span><br></pre></td></tr></table></figure><h4 id="5-4-2、启动类">5.4.2、启动类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableConfigServer</span> <span class="comment">// 开启配置服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringCloud_Config_12000_Application</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(SpringCloud_Config_12000_Application.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="5-5、测试访问远程配置文件">5.5、测试访问远程配置文件</h2><p>浏览器输入<code>http://localhost:12000/user-dev.yml</code>，Config服务模块就会从Gitee上获取到指定名称的文件。</p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122231241633.png" alt="image-20220122231241633"></p><p><strong>查看Eureka是否注册成功</strong></p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122231612849.png" alt="image-20220122231612849"></p><h2 id="5-6、使用远程仓库的配置文件">5.6、使用远程仓库的配置文件</h2><p>使用之前，需要改造<code>User-Service</code>服务，也就是<code>SpringCloud-User-8001</code>模块。</p><h4 id="5-6-1、引入依赖">5.6.1、引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- config组件依赖，实现配置中心获取配置文件--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure><h4 id="5-6-2、配置文件改造">5.6.2、配置文件改造</h4><p><strong>删除原来的配置文件</strong></p><p>创建一个文件名为<code>bootstrap.yml</code> 的配置文件，<code>bootstrap.yml</code>的文件名的特殊地方在于</p><blockquote><p><code>bootstrap.yml</code>文件也是Spring Boot的默认配置文件，而且其加载的时间相比于<code>application.yml</code>更早。</p><p><code>application.yml</code>和<code>bootstrap.yml</code>虽然都是Spring Boot的默认配置文件，但是定位却不相同。</p><ul><li><p><code>bootstrap.yml</code>可以理解成<strong>系统级别的一些参数配置</strong>，这些<strong>参数一般是不会变动的</strong>。</p></li><li><p><code>application.yml</code> 可以用来<strong>定义应用级别的参数</strong>，如果搭配 spring cloud confifig 使用，<code>application.yml</code> 里面<strong>定义的文件可以实现动态替换</strong>。</p></li></ul><p>总结就是，<code>bootstrap.yml</code>文件相当于项目启动时的引导文件，内容相对固定。<code>application.yml</code>文件是微服务的一些常规配置参数，变化比较频繁。</p></blockquote><p><strong>bootstrap.yml</strong></p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">config:</span> <span class="comment"># 注意：仓库中创建的文件是： user-dev.yml ,要根据这个文件名去配置下面的参数</span></span><br><span class="line">      <span class="comment"># 要与仓库中的配置文件的application保持一致</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">user</span></span><br><span class="line">      <span class="comment"># 要与仓库中的配置文件的profile保持一致</span></span><br><span class="line">      <span class="attr">profile:</span> <span class="string">dev</span></span><br><span class="line">      <span class="comment"># 要与仓库中的配置文件所属的版本（分支）一样</span></span><br><span class="line">      <span class="attr">label:</span> <span class="string">master</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="comment"># 使用配置中心</span></span><br><span class="line">        <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="comment"># 配置中心服务名</span></span><br><span class="line">        <span class="attr">service-id:</span> <span class="string">Config-Server</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span></span><br></pre></td></tr></table></figure><h2 id="5-7、测试使用远程配置文件">5.7、测试使用远程配置文件</h2><p>关闭Gateway的过滤器，重启服务，测试</p><blockquote><p>该请求需要经过的业务逻辑：</p><ul><li><p>输入地址</p></li><li><p>请求到达consumer的mapping</p></li><li><p>discoveryClient根据“User-Service”获取真实的请求主机地址</p></li><li><p>拼接User-Service的请求路径</p></li><li><p>RestTemplate发送请求到达User-Service的对应接口</p></li><li><p>对应接口处理业务完毕，将结果封装成CommonVo，并序列化后返回到consumer</p></li><li><p>consumer将响应内容反序列化，再封装成CommonVo返回到前端</p></li><li><p>前端页面显示请求的响应内容</p></li></ul></blockquote><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220123002600514.png" alt="image-20220123002600514"></p>]]></content>
+        <content type="html"><![CDATA[<h3 id="1、提出需求">1、提出需求</h3><p>在实际场景下，一般我们都是一个服务器运行多个项目，每个项目的端口都不一样，那么现在，我想通过不同的域名访问不同的项目，该怎么实现呢？</p><p>**例如：**现在服务器中有三个网站，分别是博客网站（端口4001）、听歌网站（端口4002）、看电影网站（端口4003）</p><table><thead><tr><th>网站类别</th><th>使用的端口</th><th>预期使用的访问域名</th></tr></thead><tbody><tr><td>博客网站：</td><td>4001</td><td><a href="http://test.com">test.com</a></td></tr><tr><td>听歌网站：</td><td>4002</td><td><a href="http://music.test.com">music.test.com</a></td></tr><tr><td>看电影网站：</td><td>4003</td><td><a href="http://movie.test.com">movie.test.com</a></td></tr></tbody></table><p>如果想达到使用指定域名不带端口号就能访问对应网站，那么这个时候就需要使用Nginx这款神器了，Nginx可以实现反向代理，将每一个访问这台机器的请求转发到对应的服务中去。</p><p><code>注意：</code>在这之前，还需要在域名的控制台中做二级域名解析</p><p>1、在控制台中添加记录</p><p>2、主机记录填写二级域名例如music</p><p>3、记录类型选择A类型</p><p>4、记录值填写服务器ip即可。</p><h3 id="2、实现需求">2、实现需求</h3><p>Nginx配置文件要怎么写呢？</p><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;    </span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>; <span class="comment">#记录远程访问ip，方便应用中获取 </span></span><br><span class="line">        <span class="attribute">server_name</span>  test.com;<span class="comment"># 访问的域名</span></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>      http://127.0.0.1:4001; <span class="comment">#将域名为test.com的请求分发到本地4001端口的服务</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  music.test.com;  </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>      http://127.0.0.1:4002; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>; </span><br><span class="line">        <span class="attribute">server_name</span>  movie.test.com;  </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>      http://127.0.0.1:4003; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>OK！So Easy 斯内 ~</p>]]></content>
       
       
       <categories>
           
-          <category> 学习笔记 </category>
+          <category> 反向代理 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> SprignCloud </tag>
+            <tag> Nginx </tag>
             
         </tags>
       
@@ -29,7 +29,32 @@
     
     
     <entry>
-      <title>SpringCloud组件学习之gateway</title>
+      <title>SpringCloud组件学习之Config</title>
+      <link href="/posts/9f3469ff.html"/>
+      <url>/posts/9f3469ff.html</url>
+      
+        <content type="html"><![CDATA[<h1>5、SpringCloud Netflix Config的使用以及讲解</h1><h2 id="5-1、简介">5.1、简介</h2><p>在分布式系统中，由于服务数量非常多，配置文件分散在不同的微服务项目中，<strong>管理不方便</strong>。</p><p>Spring Cloud Config组件主要用于<strong>集中管理配置文件</strong>，它<strong>支持配置文件放在配置服务的本地，也支持放在Git仓库（Github、Gitee）</strong></p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122164102473.png" alt="image-20220122164102473"></p><p><strong>配置中心本质上也是一个微服务，同样需要注册到Eureka注册中心。</strong></p><h2 id="5-2、Git平台的选择">5.2、Git平台的选择</h2><blockquote><p>github访问太慢，本次学习使用码云（gitee）</p></blockquote><h2 id="5-3、创建远程仓库">5.3、创建远程仓库</h2><h4 id="5-3-1、新建仓库">5.3.1、新建仓库</h4><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122164913710.png" alt="image-20220122164913710"></p><h4 id="5-3-2、配置仓库信息">5.3.2、配置仓库信息</h4><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122165347412.png" alt="image-20220122165347412"></p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122165445539.png" alt="image-20220122165445539"></p><h4 id="5-3-3、创建配置文件">5.3.3、创建配置文件</h4><p>直接创建配置文件</p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122225549917.png" alt="image-20220122225549917"></p><p><strong>配置文件命名规则：</strong></p><p>配置文件的命名方式：<code>&#123;application&#125;-&#123;profifile&#125;.yml </code>或 <code>&#123;application&#125;-&#123;profifile&#125;.properties</code></p><p><code>application</code>为应用名称</p><p><code>profifile</code>用于区分开发环境（dev），测试环境（test）、生产环境（prod）等</p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122225758960.png" alt="image-20220122225758960"></p><h2 id="5-4、创建Config模块">5.4、创建Config模块</h2><h4 id="5-4-1、引入依赖">5.4.1、引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入Eureka客户端依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 引入Config服务类依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-config-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure><h4 id="5-4-2、配置文件">5.4.2、配置文件</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">12000</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">Config-Server</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">config:</span></span><br><span class="line">      <span class="attr">server:</span></span><br><span class="line">        <span class="attr">git:</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">https://gitee.com/superAliang/spring-cloud-config-demo.git</span> <span class="comment"># gitee上项目的地址，即远程库地址，公开的仓库不需要用户名和密码</span></span><br><span class="line">          <span class="comment"># username: 用户名</span></span><br><span class="line">          <span class="comment"># password: 密码</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span> <span class="comment"># 指定Eureka地址，用于将config这个服务注册到Eureka</span></span><br></pre></td></tr></table></figure><h4 id="5-4-2、启动类">5.4.2、启动类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableConfigServer</span> <span class="comment">// 开启配置服务</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringCloud_Config_12000_Application</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(SpringCloud_Config_12000_Application.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="5-5、测试访问远程配置文件">5.5、测试访问远程配置文件</h2><p>浏览器输入<code>http://localhost:12000/user-dev.yml</code>，Config服务模块就会从Gitee上获取到指定名称的文件。</p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122231241633.png" alt="image-20220122231241633"></p><p><strong>查看Eureka是否注册成功</strong></p><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220122231612849.png" alt="image-20220122231612849"></p><h2 id="5-6、使用远程仓库的配置文件">5.6、使用远程仓库的配置文件</h2><p>使用之前，需要改造<code>User-Service</code>服务，也就是<code>SpringCloud-User-8001</code>模块。</p><h4 id="5-6-1、引入依赖">5.6.1、引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- config组件依赖，实现配置中心获取配置文件--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure><h4 id="5-6-2、配置文件改造">5.6.2、配置文件改造</h4><p><strong>删除原来的配置文件</strong></p><p>创建一个文件名为<code>bootstrap.yml</code> 的配置文件，<code>bootstrap.yml</code>的文件名的特殊地方在于</p><blockquote><p><code>bootstrap.yml</code>文件也是Spring Boot的默认配置文件，而且其加载的时间相比于<code>application.yml</code>更早。</p><p><code>application.yml</code>和<code>bootstrap.yml</code>虽然都是Spring Boot的默认配置文件，但是定位却不相同。</p><ul><li><p><code>bootstrap.yml</code>可以理解成<strong>系统级别的一些参数配置</strong>，这些<strong>参数一般是不会变动的</strong>。</p></li><li><p><code>application.yml</code> 可以用来<strong>定义应用级别的参数</strong>，如果搭配 spring cloud confifig 使用，<code>application.yml</code> 里面<strong>定义的文件可以实现动态替换</strong>。</p></li></ul><p>总结就是，<code>bootstrap.yml</code>文件相当于项目启动时的引导文件，内容相对固定。<code>application.yml</code>文件是微服务的一些常规配置参数，变化比较频繁。</p></blockquote><p><strong>bootstrap.yml</strong></p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">config:</span> <span class="comment"># 注意：仓库中创建的文件是： user-dev.yml ,要根据这个文件名去配置下面的参数</span></span><br><span class="line">      <span class="comment"># 要与仓库中的配置文件的application保持一致</span></span><br><span class="line">      <span class="attr">name:</span> <span class="string">user</span></span><br><span class="line">      <span class="comment"># 要与仓库中的配置文件的profile保持一致</span></span><br><span class="line">      <span class="attr">profile:</span> <span class="string">dev</span></span><br><span class="line">      <span class="comment"># 要与仓库中的配置文件所属的版本（分支）一样</span></span><br><span class="line">      <span class="attr">label:</span> <span class="string">master</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="comment"># 使用配置中心</span></span><br><span class="line">        <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="comment"># 配置中心服务名</span></span><br><span class="line">        <span class="attr">service-id:</span> <span class="string">Config-Server</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:10086/eureka</span></span><br></pre></td></tr></table></figure><h2 id="5-7、测试使用远程配置文件">5.7、测试使用远程配置文件</h2><p>关闭Gateway的过滤器，重启服务，测试</p><blockquote><p>该请求需要经过的业务逻辑：</p><ul><li><p>输入地址</p></li><li><p>请求到达consumer的mapping</p></li><li><p>discoveryClient根据“User-Service”获取真实的请求主机地址</p></li><li><p>拼接User-Service的请求路径</p></li><li><p>RestTemplate发送请求到达User-Service的对应接口</p></li><li><p>对应接口处理业务完毕，将结果封装成CommonVo，并序列化后返回到consumer</p></li><li><p>consumer将响应内容反序列化，再封装成CommonVo返回到前端</p></li><li><p>前端页面显示请求的响应内容</p></li></ul></blockquote><p><img src="https://gitee.com/superAliang/pic-go-imges/raw/master/SpirngCloud_bill/img/image-20220123002600514.png" alt="image-20220123002600514"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 分布式治理 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Config </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>SpringCloud组件学习之Gateway</title>
       <link href="/posts/6004b1a3.html"/>
       <url>/posts/6004b1a3.html</url>
       
@@ -38,14 +63,14 @@
       
       <categories>
           
-          <category> 学习笔记 </category>
+          <category> 分布式治理 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> SprignCloud </tag>
+            <tag> Gateway </tag>
             
         </tags>
       
@@ -63,14 +88,14 @@
       
       <categories>
           
-          <category> 学习笔记 </category>
+          <category> 分布式治理 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> SprignCloud </tag>
+            <tag> Openfeign </tag>
             
         </tags>
       
@@ -88,14 +113,14 @@
       
       <categories>
           
-          <category> 学习笔记 </category>
+          <category> 分布式治理 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> SprignCloud </tag>
+            <tag> Hystrix </tag>
             
         </tags>
       
@@ -113,14 +138,14 @@
       
       <categories>
           
-          <category> SprignCloud </category>
+          <category> 分布式治理 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 学习笔记 </tag>
+            <tag> Eureka </tag>
             
         </tags>
       
@@ -140,8 +165,6 @@
           
           <category> 消息中间件 </category>
           
-          <category> RabbitMQ </category>
-          
       </categories>
       
       
@@ -149,11 +172,11 @@
             
             <tag> SpringBoot </tag>
             
+            <tag> RabbitMQ </tag>
+            
             <tag> Redis </tag>
             
             <tag> Maven </tag>
-            
-            <tag> RabbitMQ </tag>
             
         </tags>
       
@@ -182,7 +205,11 @@
             
             <tag> SpringBoot </tag>
             
+            <tag> Mybatis </tag>
+            
             <tag> TK-Mybatis </tag>
+            
+            <tag> Mybatis-Plus </tag>
             
             <tag> H2 </tag>
             
@@ -191,10 +218,6 @@
             <tag> Thymeleaf </tag>
             
             <tag> SpringMVC </tag>
-            
-            <tag> Mybatis </tag>
-            
-            <tag> Mybatis-Plus </tag>
             
         </tags>
       
@@ -214,12 +237,16 @@
           
           <category> Java </category>
           
+          <category> 多线程 </category>
+          
       </categories>
       
       
         <tags>
             
-            <tag> 多线程 </tag>
+            <tag> Thread </tag>
+            
+            <tag> 线程 </tag>
             
         </tags>
       
@@ -239,14 +266,14 @@
           
           <category> 演示 </category>
           
+          <category> 外挂标签 </category>
+          
       </categories>
       
       
         <tags>
             
             <tag> Markdown </tag>
-            
-            <tag> 外挂标签 </tag>
             
         </tags>
       

@@ -6,7 +6,7 @@
   <link href="https://blog.kakar.top/atom.xml" rel="self"/>
   
   <link href="https://blog.kakar.top/"/>
-  <updated>2023-06-16T13:44:46.000Z</updated>
+  <updated>2023-06-24T17:17:51.000Z</updated>
   <id>https://blog.kakar.top/</id>
   
   <author>
@@ -17,7 +17,28 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>SpringCloud组件学习之config</title>
+    <title>Nginx之二级域名反向代理</title>
+    <link href="https://blog.kakar.top/posts/7030efce.html"/>
+    <id>https://blog.kakar.top/posts/7030efce.html</id>
+    <published>2023-06-24T17:17:51.000Z</published>
+    <updated>2023-06-24T17:17:51.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1、提出需求">1、提出需求</h3><p>在实际场景下，一般我们都是一个服务器运行多个项目，每个项目的端口都不一样，那么现在，我想通过不同的域名访问不同的项目，该怎么实现呢？</p><p>**例如：**现在服务器中有三个网站，分别是博客网站（端口4001）、听歌网站（端口4002）、看电影网站（端口4003）</p><table><thead><tr><th>网站类别</th><th>使用的端口</th><th>预期使用的访问域名</th></tr></thead><tbody><tr><td>博客网站：</td><td>4001</td><td><a href="http://test.com">test.com</a></td></tr><tr><td>听歌网站：</td><td>4002</td><td><a href="http://music.test.com">music.test.com</a></td></tr><tr><td>看电影网站：</td><td>4003</td><td><a href="http://movie.test.com">movie.test.com</a></td></tr></tbody></table><p>如果想达到使用指定域名不带端口号就能访问对应网站，那么这个时候就需要使用Nginx这款神器了，Nginx可以实现反向代理，将每一个访问这台机器的请求转发到对应的服务中去。</p><p><code>注意：</code>在这之前，还需要在域名的控制台中做二级域名解析</p><p>1、在控制台中添加记录</p><p>2、主机记录填写二级域名例如music</p><p>3、记录类型选择A类型</p><p>4、记录值填写服务器ip即可。</p><h3 id="2、实现需求">2、实现需求</h3><p>Nginx配置文件要怎么写呢？</p><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">http</span> &#123;    </span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>; <span class="comment">#记录远程访问ip，方便应用中获取 </span></span><br><span class="line">        <span class="attribute">server_name</span>  test.com;<span class="comment"># 访问的域名</span></span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>      http://127.0.0.1:4001; <span class="comment">#将域名为test.com的请求分发到本地4001端口的服务</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>;</span><br><span class="line">        <span class="attribute">server_name</span>  music.test.com;  </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>      http://127.0.0.1:4002; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="section">server</span> &#123;</span><br><span class="line">        <span class="attribute">listen</span>       <span class="number">80</span>;</span><br><span class="line">        <span class="attribute">proxy_set_header</span>  X-Real-IP  <span class="variable">$remote_addr</span>; </span><br><span class="line">        <span class="attribute">server_name</span>  movie.test.com;  </span><br><span class="line">        <span class="section">location</span> / &#123;</span><br><span class="line">            <span class="attribute">proxy_pass</span>      http://127.0.0.1:4003; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>OK！So Easy 斯内 ~</p>]]></content>
+    
+    
+    <summary type="html">🥧本文主要讲述Nginx的相关知识点，以及在配置文件中的配置参数列举</summary>
+    
+    
+    
+    <category term="反向代理" scheme="https://blog.kakar.top/categories/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
+    
+    
+    <category term="Nginx" scheme="https://blog.kakar.top/tags/Nginx/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringCloud组件学习之Config</title>
     <link href="https://blog.kakar.top/posts/9f3469ff.html"/>
     <id>https://blog.kakar.top/posts/9f3469ff.html</id>
     <published>2023-06-16T13:44:46.000Z</published>
@@ -30,15 +51,15 @@
     
     
     
-    <category term="学习笔记" scheme="https://blog.kakar.top/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="分布式治理" scheme="https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/"/>
     
     
-    <category term="SprignCloud" scheme="https://blog.kakar.top/tags/SprignCloud/"/>
+    <category term="Config" scheme="https://blog.kakar.top/tags/Config/"/>
     
   </entry>
   
   <entry>
-    <title>SpringCloud组件学习之gateway</title>
+    <title>SpringCloud组件学习之Gateway</title>
     <link href="https://blog.kakar.top/posts/6004b1a3.html"/>
     <id>https://blog.kakar.top/posts/6004b1a3.html</id>
     <published>2023-06-16T13:43:53.000Z</published>
@@ -51,10 +72,10 @@
     
     
     
-    <category term="学习笔记" scheme="https://blog.kakar.top/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="分布式治理" scheme="https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/"/>
     
     
-    <category term="SprignCloud" scheme="https://blog.kakar.top/tags/SprignCloud/"/>
+    <category term="Gateway" scheme="https://blog.kakar.top/tags/Gateway/"/>
     
   </entry>
   
@@ -72,10 +93,10 @@
     
     
     
-    <category term="学习笔记" scheme="https://blog.kakar.top/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="分布式治理" scheme="https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/"/>
     
     
-    <category term="SprignCloud" scheme="https://blog.kakar.top/tags/SprignCloud/"/>
+    <category term="Openfeign" scheme="https://blog.kakar.top/tags/Openfeign/"/>
     
   </entry>
   
@@ -93,10 +114,10 @@
     
     
     
-    <category term="学习笔记" scheme="https://blog.kakar.top/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="分布式治理" scheme="https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/"/>
     
     
-    <category term="SprignCloud" scheme="https://blog.kakar.top/tags/SprignCloud/"/>
+    <category term="Hystrix" scheme="https://blog.kakar.top/tags/Hystrix/"/>
     
   </entry>
   
@@ -114,10 +135,10 @@
     
     
     
-    <category term="SprignCloud" scheme="https://blog.kakar.top/categories/SprignCloud/"/>
+    <category term="分布式治理" scheme="https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/"/>
     
     
-    <category term="学习笔记" scheme="https://blog.kakar.top/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <category term="Eureka" scheme="https://blog.kakar.top/tags/Eureka/"/>
     
   </entry>
   
@@ -137,16 +158,14 @@
     
     <category term="消息中间件" scheme="https://blog.kakar.top/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
     
-    <category term="RabbitMQ" scheme="https://blog.kakar.top/categories/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/RabbitMQ/"/>
-    
     
     <category term="SpringBoot" scheme="https://blog.kakar.top/tags/SpringBoot/"/>
+    
+    <category term="RabbitMQ" scheme="https://blog.kakar.top/tags/RabbitMQ/"/>
     
     <category term="Redis" scheme="https://blog.kakar.top/tags/Redis/"/>
     
     <category term="Maven" scheme="https://blog.kakar.top/tags/Maven/"/>
-    
-    <category term="RabbitMQ" scheme="https://blog.kakar.top/tags/RabbitMQ/"/>
     
   </entry>
   
@@ -171,7 +190,11 @@
     
     <category term="SpringBoot" scheme="https://blog.kakar.top/tags/SpringBoot/"/>
     
+    <category term="Mybatis" scheme="https://blog.kakar.top/tags/Mybatis/"/>
+    
     <category term="TK-Mybatis" scheme="https://blog.kakar.top/tags/TK-Mybatis/"/>
+    
+    <category term="Mybatis-Plus" scheme="https://blog.kakar.top/tags/Mybatis-Plus/"/>
     
     <category term="H2" scheme="https://blog.kakar.top/tags/H2/"/>
     
@@ -180,10 +203,6 @@
     <category term="Thymeleaf" scheme="https://blog.kakar.top/tags/Thymeleaf/"/>
     
     <category term="SpringMVC" scheme="https://blog.kakar.top/tags/SpringMVC/"/>
-    
-    <category term="Mybatis" scheme="https://blog.kakar.top/tags/Mybatis/"/>
-    
-    <category term="Mybatis-Plus" scheme="https://blog.kakar.top/tags/Mybatis-Plus/"/>
     
   </entry>
   
@@ -203,8 +222,12 @@
     
     <category term="Java" scheme="https://blog.kakar.top/categories/Java/"/>
     
+    <category term="多线程" scheme="https://blog.kakar.top/categories/Java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
     
-    <category term="多线程" scheme="https://blog.kakar.top/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+    <category term="Thread" scheme="https://blog.kakar.top/tags/Thread/"/>
+    
+    <category term="线程" scheme="https://blog.kakar.top/tags/%E7%BA%BF%E7%A8%8B/"/>
     
   </entry>
   
@@ -224,10 +247,10 @@
     
     <category term="演示" scheme="https://blog.kakar.top/categories/%E6%BC%94%E7%A4%BA/"/>
     
+    <category term="外挂标签" scheme="https://blog.kakar.top/categories/%E6%BC%94%E7%A4%BA/%E5%A4%96%E6%8C%82%E6%A0%87%E7%AD%BE/"/>
+    
     
     <category term="Markdown" scheme="https://blog.kakar.top/tags/Markdown/"/>
-    
-    <category term="外挂标签" scheme="https://blog.kakar.top/tags/%E5%A4%96%E6%8C%82%E6%A0%87%E7%AD%BE/"/>
     
   </entry>
   
