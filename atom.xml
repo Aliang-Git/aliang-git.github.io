@@ -161,11 +161,11 @@
     
     <category term="SpringBoot" scheme="https://blog.kakar.top/tags/SpringBoot/"/>
     
+    <category term="RabbitMQ" scheme="https://blog.kakar.top/tags/RabbitMQ/"/>
+    
     <category term="Redis" scheme="https://blog.kakar.top/tags/Redis/"/>
     
     <category term="Maven" scheme="https://blog.kakar.top/tags/Maven/"/>
-    
-    <category term="RabbitMQ" scheme="https://blog.kakar.top/tags/RabbitMQ/"/>
     
   </entry>
   
@@ -190,7 +190,11 @@
     
     <category term="SpringBoot" scheme="https://blog.kakar.top/tags/SpringBoot/"/>
     
+    <category term="Mybatis" scheme="https://blog.kakar.top/tags/Mybatis/"/>
+    
     <category term="TK-Mybatis" scheme="https://blog.kakar.top/tags/TK-Mybatis/"/>
+    
+    <category term="Mybatis-Plus" scheme="https://blog.kakar.top/tags/Mybatis-Plus/"/>
     
     <category term="H2" scheme="https://blog.kakar.top/tags/H2/"/>
     
@@ -199,10 +203,6 @@
     <category term="Thymeleaf" scheme="https://blog.kakar.top/tags/Thymeleaf/"/>
     
     <category term="SpringMVC" scheme="https://blog.kakar.top/tags/SpringMVC/"/>
-    
-    <category term="Mybatis" scheme="https://blog.kakar.top/tags/Mybatis/"/>
-    
-    <category term="Mybatis-Plus" scheme="https://blog.kakar.top/tags/Mybatis-Plus/"/>
     
   </entry>
   
@@ -225,9 +225,9 @@
     <category term="多线程" scheme="https://blog.kakar.top/categories/Java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
     
     
-    <category term="线程" scheme="https://blog.kakar.top/tags/%E7%BA%BF%E7%A8%8B/"/>
-    
     <category term="Thread" scheme="https://blog.kakar.top/tags/Thread/"/>
+    
+    <category term="线程" scheme="https://blog.kakar.top/tags/%E7%BA%BF%E7%A8%8B/"/>
     
   </entry>
   
