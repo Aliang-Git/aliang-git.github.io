@@ -3531,7 +3531,7 @@ function createWinbox() {
 
 <!--<details class="folding-tag" cyan><summary> 查看风景背景 </summary>
               <div class='content'>
-              <p>–&gt;</p><!--<div class="bgbox">--><!--<a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://api.dujin.org/pic/yuanshen/)" class="imgbox" onclick="changeBg('url(https://api.dujin.org/pic/yuanshen/)')"></a>--><!--</div>--><!--
+              <p>—&gt;<br><!--<div class="bgbox">--><br><!--<a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://api.dujin.org/pic/yuanshen/)" class="imgbox" onclick="changeBg('url(https://api.dujin.org/pic/yuanshen/)')"></a>--></p><!--</div>--><p>&lt;!—</p>
               </div>
             </details>-->
 
@@ -3539,7 +3539,7 @@ function createWinbox() {
 
 <!--<details class="folding-tag" cyan><summary> 查看萌宠背景 </summary>
               <div class='content'>
-              <p>–&gt;</p><!--<div class="bgbox">--><!--<a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://api.dujin.org/pic/yuanshen/)" class="imgbox" onclick="changeBg('url(https://api.dujin.org/pic/yuanshen/)')"></a>--><!--</div>--><!--
+              <p>—&gt;<br><!--<div class="bgbox">--><br><!--<a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://api.dujin.org/pic/yuanshen/)" class="imgbox" onclick="changeBg('url(https://api.dujin.org/pic/yuanshen/)')"></a>--></p><!--</div>--><p>&lt;!—</p>
               </div>
             </details>-->
 
@@ -3563,7 +3563,7 @@ function createWinbox() {
 <!--<h3>4. 适配手机</h3>-->
 <!--<details class="folding-tag" cyan><summary> 查看适配手机的背景 </summary>
               <div class='content'>
-              <p>–&gt;</p><!--<div class="bgbox">--><!--<a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://api.dujin.org/pic/yuanshen/)" class="pimgbox" onclick="changeBg('url(https://lskypro.acozycotage.net/Fomalhaut/img/mb4.webp)')"></a>--><!--</div>--><!--
+              <p>—&gt;<br><!--<div class="bgbox">--><br><!--<a href="javascript:;" rel="noopener external nofollow" style="background-image:url(https://api.dujin.org/pic/yuanshen/)" class="pimgbox" onclick="changeBg('url(https://lskypro.acozycotage.net/Fomalhaut/img/mb4.webp)')"></a>--></p><!--</div>--><p>&lt;!—</p>
               </div>
             </details>-->
 
