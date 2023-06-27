@@ -315,13 +315,6 @@
   </url>
   
   <url>
-    <loc>https://blog.kakar.top/tags/Thread/</loc>
-    <lastmod>2023-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://blog.kakar.top/tags/Mybatis/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -343,21 +336,7 @@
   </url>
   
   <url>
-    <loc>https://blog.kakar.top/tags/Gateway/</loc>
-    <lastmod>2023-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.kakar.top/tags/Hystrix/</loc>
-    <lastmod>2023-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.kakar.top/tags/Markdown/</loc>
+    <loc>https://blog.kakar.top/tags/Eureka/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -371,7 +350,21 @@
   </url>
   
   <url>
-    <loc>https://blog.kakar.top/tags/Eureka/</loc>
+    <loc>https://blog.kakar.top/tags/Markdown/</loc>
+    <lastmod>2023-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.kakar.top/tags/Hystrix/</loc>
+    <lastmod>2023-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.kakar.top/tags/Gateway/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -379,6 +372,13 @@
   
   <url>
     <loc>https://blog.kakar.top/tags/Openfeign/</loc>
+    <lastmod>2023-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.kakar.top/tags/Thread/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -401,7 +401,7 @@
   </url>
   
   <url>
-    <loc>https://blog.kakar.top/categories/Java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
+    <loc>https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -409,13 +409,6 @@
   
   <url>
     <loc>https://blog.kakar.top/categories/Java/%E6%A1%86%E6%9E%B6%E6%95%B4%E5%90%88/</loc>
-    <lastmod>2023-06-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://blog.kakar.top/categories/%E5%88%86%E5%B8%83%E5%BC%8F%E6%B2%BB%E7%90%86/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -430,6 +423,13 @@
   
   <url>
     <loc>https://blog.kakar.top/categories/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</loc>
+    <lastmod>2023-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.kakar.top/categories/Java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</loc>
     <lastmod>2023-06-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
